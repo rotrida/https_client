@@ -1,25 +1,7 @@
 #include "https_client.h"
 #include <vector>
 #include <utility>
-
-std::vector<String> split(const String & val, char separator)
-{
-	std::vector<String> ret;
-	auto start = 0;
-	auto pos = val.indexOf(separator);
-	
-	while(pos!= -1)
-	{
-		ret.push_back(val.substring(start, pos));
-		start = pos + 1;
-		pos = val.indexOf(separator, start);
-	}
-	
-	if(start + 1 < val.length())
-		ret.push_back(val.substring(start));
-	
-	return ret;
-}
+#include "utils.h"
 
 std::pair<String, String> separate_host_url(const String & address)
 {
@@ -61,7 +43,7 @@ bool https_client::read_result(WiFiClientSecure & client)
 		
 	String line = client.readStringUntil('\n');
 	
-	const auto result = split(line, ' ');
+	const auto result = utils::split(line, ' ');
 	
 	if(result.size() < 3 )
 	{
@@ -82,7 +64,7 @@ void https_client::read_headers(WiFiClientSecure & client)
 		if (line == "\r")
 			return;
 		
-		auto header = split(line, ' ');
+		auto header = utils::split(line, ' ');
 		
 		if(header.size() < 2)
 			continue;
